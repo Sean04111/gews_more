@@ -1,0 +1,26 @@
+syntax = "v2"
+info(
+	title: "用户登录"
+	author: "Sean"
+	version: "1.0"
+)
+type (
+	reque {
+		Email    string `form:"email"`
+		Password string `form:"password"`
+	}
+	respo {
+		Error_code int  `json:"error_code"`
+		Data       Data `json:"data"`
+	}
+	Data {
+		Uid   int    `json:"uid"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+	}
+)
+service login{
+	@doc "login"
+	@handler login
+	get / (reque)returns(respo)
+}
