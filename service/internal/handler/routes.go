@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	login "gews_more/service/internal/handler/login"
+	register "gews_more/service/internal/handler/register"
+	registercode "gews_more/service/internal/handler/registercode"
 	"gews_more/service/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -17,6 +19,26 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/",
 				Handler: login.LoginHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/user/registercode",
+				Handler: registercode.RegistercodeHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/user/register",
+				Handler: register.RegisterHandler(serverCtx),
 			},
 		},
 	)

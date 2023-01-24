@@ -1,0 +1,51 @@
+syntax = "v2"
+info(
+    title: "用户注册模块"
+    author: "Sean"
+    version:"1.0"
+)
+type(
+    registercodereque{
+        Email string `json:"email"`
+        Name string `json:"name"`
+    }
+    registercoderespo{
+        Error_code int `json:"error_code"`
+        Data CodeData `json:"data"`
+    }
+    CodeData{
+        Code string `json:"code"`
+    }
+)
+@server(
+    group:registercode
+)
+service gews-api {
+    @handler registercode
+    post /user/registercode(registercodereque)returns(registercoderespo)
+}
+type(
+    registerreque{
+        Name string `json:"name"`
+        Emial string `json:"email"`
+        Code string `json:"code"`
+    }
+    registerrespo{
+        Error_code int `json:"error_code"`
+        Data Registerdata `json:"data"`
+    }
+    Registerdata{
+        Uid int `json:"uid"`
+        Name string `json:"name"`
+        Email string `json:"email"`
+    }
+)
+@server(
+    group: register
+)
+service gews-api {
+    @handler register
+    post /user/register(registerreque)returns(registerrespo)
+}
+
+

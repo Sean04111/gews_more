@@ -2,8 +2,8 @@
 package types
 
 type Reque struct {
-	Email    string `form:"email"`
-	Password string `form:"password"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type Respo struct {
@@ -12,6 +12,37 @@ type Respo struct {
 }
 
 type Data struct {
+	Uid   int    `json:"uid"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+type Registercodereque struct {
+	Email string `json:"email"`
+	Name  string `json:"name"`
+}
+
+type Registercoderespo struct {
+	Error_code int      `json:"error_code"`
+	Data       CodeData `json:"data"`
+}
+
+type CodeData struct {
+	Code string `json:"code"`
+}
+
+type Registerreque struct {
+	Name  string `json:"name"`
+	Emial string `json:"email"`
+	Code  string `json:"code"`
+}
+
+type Registerrespo struct {
+	Error_code int          `json:"error_code"`
+	Data       Registerdata `json:"data"`
+}
+
+type Registerdata struct {
 	Uid   int    `json:"uid"`
 	Name  string `json:"name"`
 	Email string `json:"email"`

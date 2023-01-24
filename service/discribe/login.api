@@ -6,8 +6,8 @@ info(
 )
 type (
 	reque {
-		Email    string `form:"email"`
-		Password string `form:"password"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 	respo {
 		Error_code int  `json:"error_code"`
