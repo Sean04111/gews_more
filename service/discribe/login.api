@@ -19,7 +19,10 @@ type (
 		Email string `json:"email"`
 	}
 )
-service login{
+@server(
+    group:login
+)
+service gews-api{
 	@doc "login"
 	@handler login
 	get / (reque)returns(respo)

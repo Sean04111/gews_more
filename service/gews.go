@@ -4,15 +4,15 @@ import (
 	"flag"
 	"fmt"
 
-	"gews_more/service/user/login/internal/config"
-	"gews_more/service/user/login/internal/handler"
-	"gews_more/service/user/login/internal/svc"
+	"gews_more/service/internal/config"
+	"gews_more/service/internal/handler"
+	"gews_more/service/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/login.yaml", "the config file")
+var configFile = flag.String("f", "etc/gews-api.yaml", "the config file")
 
 func main() {
 	flag.Parse()

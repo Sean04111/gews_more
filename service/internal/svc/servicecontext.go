@@ -1,8 +1,8 @@
 package svc
 
 import (
-	"gews_more/service/user/login/internal/config"
-	"gews_more/service/user/login/model"
+	"gews_more/service/internal/config"
+	"gews_more/service/model"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -15,6 +15,6 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config: c,
-		UserModel: model.NewUserModel(sqlx.NewMysql(c.DB.Datasource)),
+		UserModel: model.NewUserModel(sqlx.NewMysql(c.DB.DataSource)),
 	}
 }

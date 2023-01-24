@@ -1,15 +1,15 @@
-package handler
+package login
 
 import (
 	"net/http"
 
-	"gews_more/service/user/login/internal/logic"
-	"gews_more/service/user/login/internal/svc"
-	"gews_more/service/user/login/internal/types"
+	"gews_more/service/internal/logic/login"
+	"gews_more/service/internal/svc"
+	"gews_more/service/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func loginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func LoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.Reque
 		if err := httpx.Parse(r, &req); err != nil {
@@ -17,7 +17,7 @@ func loginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewLoginLogic(r.Context(), svcCtx)
+		l := login.NewLoginLogic(r.Context(), svcCtx)
 		resp, err := l.Login(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)

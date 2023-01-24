@@ -17,16 +17,16 @@ import (
 var (
 	userFieldNames          = builder.RawFieldNames(&User{})
 	userRows                = strings.Join(userFieldNames, ",")
-	userRowsExpectAutoSet   = strings.Join(stringx.Remove(userFieldNames, "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), ",")
-	userRowsWithPlaceHolder = strings.Join(stringx.Remove(userFieldNames, "`uid`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), "=?,") + "=?"
+	userRowsExpectAutoSet   = strings.Join(stringx.Remove(userFieldNames, "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`"), ",")
+	userRowsWithPlaceHolder = strings.Join(stringx.Remove(userFieldNames, "`email`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`"), "=?,") + "=?"
 )
 
 type (
 	userModel interface {
 		Insert(ctx context.Context, data *User) (sql.Result, error)
-		FindOne(ctx context.Context, uid int64) (*User, error)
+		FindOne(ctx context.Context, email string) (*User, error)
 		Update(ctx context.Context, data *User) error
-		Delete(ctx context.Context, uid int64) error
+		Delete(ctx context.Context, email string) error
 	}
 
 	defaultUserModel struct {
@@ -49,16 +49,16 @@ func newUserModel(conn sqlx.SqlConn) *defaultUserModel {
 	}
 }
 
-func (m *defaultUserModel) Delete(ctx context.Context, uid int64) error {
-	query := fmt.Sprintf("delete from %s where `uid` = ?", m.table)
-	_, err := m.conn.ExecCtx(ctx, query, uid)
+func (m *defaultUserModel) Delete(ctx context.Context, email string) error {
+	query := fmt.Sprintf("delete from %s where `email` = ?", m.table)
+	_, err := m.conn.ExecCtx(ctx, query, email)
 	return err
 }
 
-func (m *defaultUserModel) FindOne(ctx context.Context, uid int64) (*User, error) {
-	query := fmt.Sprintf("select %s from %s where `uid` = ? limit 1", userRows, m.table)
+func (m *defaultUserModel) FindOne(ctx context.Context, email string) (*User, error) {
+	query := fmt.Sprintf("select %s from %s where `email` = ? limit 1", userRows, m.table)
 	var resp User
-	err := m.conn.QueryRowCtx(ctx, &resp, query, uid)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, email)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -76,8 +76,8 @@ func (m *defaultUserModel) Insert(ctx context.Context, data *User) (sql.Result, 
 }
 
 func (m *defaultUserModel) Update(ctx context.Context, data *User) error {
-	query := fmt.Sprintf("update %s set %s where `uid` = ?", m.table, userRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Email, data.Password, data.Name, data.Uid)
+	query := fmt.Sprintf("update %s set %s where `email` = ?", m.table, userRowsWithPlaceHolder)
+	_, err := m.conn.ExecCtx(ctx, query, data.Uid, data.Password, data.Name, data.Email)
 	return err
 }
 

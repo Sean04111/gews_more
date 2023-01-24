@@ -4,7 +4,8 @@ package handler
 import (
 	"net/http"
 
-	"gews_more/service/user/login/internal/svc"
+	login "gews_more/service/internal/handler/login"
+	"gews_more/service/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )
@@ -15,7 +16,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodGet,
 				Path:    "/",
-				Handler: loginHandler(serverCtx),
+				Handler: login.LoginHandler(serverCtx),
 			},
 		},
 	)
