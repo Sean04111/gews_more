@@ -26,5 +26,5 @@ type (
 service gews-api{
 	@doc "login"
 	@handler login
-	get / (reque)returns(respo)
+	get /(reque)returns(respo)
 }

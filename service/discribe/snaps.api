@@ -1,0 +1,47 @@
+syntax = "v2"
+info(
+    title: "留言模块"
+    author: "Sean"
+    version: "1.0"
+)
+type(
+    snapreque{
+        Name string `json:"name"`
+    }
+    snaprespo{
+        Error_code int `json:"error_code"`
+        Snaps []Snap `json:"snaps"`
+    }
+    Snap{
+        Sid int `json:"sid"`
+        Speaker string `json:"speaker"`
+        Message string `json:"message"`
+        Date string `json:"date"`
+        At string `json:"at"`
+    }
+)
+@server(
+    group:getsnaps
+)
+service gews-api {
+    @handler getsnaps
+    get /snaps(snapreque) returns(snaprespo)
+}
+type(
+    snappostreque{
+        Speaker string `json:"speaker"`
+        Message string `json:"message"`
+        Date string `json:"date"`
+        At string `json:"at"`
+    }
+    snappostrespo{
+        Error_code int `json:"error_code"`
+    }
+)
+@server(
+    group:snappost
+)
+service gews-api {
+    @handler postsnap
+    post /snappost(snappostreque)returns(snappostrespo)
+}

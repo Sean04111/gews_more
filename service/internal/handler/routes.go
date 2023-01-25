@@ -4,9 +4,11 @@ package handler
 import (
 	"net/http"
 
+	getsnaps "gews_more/service/internal/handler/getsnaps"
 	login "gews_more/service/internal/handler/login"
 	register "gews_more/service/internal/handler/register"
 	registercode "gews_more/service/internal/handler/registercode"
+	snappost "gews_more/service/internal/handler/snappost"
 	"gews_more/service/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -50,5 +52,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/snaps",
+				Handler: getsnaps.GetsnapsHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/snappost",
+				Handler: snappost.PostsnapHandler(serverCtx),
+			},
+		},
 	)
 }

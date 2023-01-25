@@ -48,3 +48,31 @@ type Registerdata struct {
 	Name  string `json:"name"`
 	Email string `json:"email"`
 }
+
+type Snapreque struct {
+	Name string `json:"name"`
+}
+
+type Snaprespo struct {
+	Error_code int    `json:"error_code"`
+	Snaps      []Snap `json:"snaps"`
+}
+
+type Snap struct {
+	Sid     int    `json:"sid"`
+	Speaker string `json:"speaker"`
+	Message string `json:"message"`
+	Date    string `json:"date"`
+	At      string `json:"at"`
+}
+
+type Snappostreque struct {
+	Speaker string `json:"speaker"`
+	Message string `json:"message"`
+	Date    string `json:"date"`
+	At      string `json:"at"`
+}
+
+type Snappostrespo struct {
+	Error_code int `json:"error_code"`
+}
