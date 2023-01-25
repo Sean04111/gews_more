@@ -6,6 +6,7 @@ import (
 	"gews_more/service/internal/logic/register"
 	"gews_more/service/internal/svc"
 	"gews_more/service/internal/types"
+
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
