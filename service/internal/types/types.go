@@ -32,9 +32,10 @@ type CodeData struct {
 }
 
 type Registerreque struct {
-	Name  string `json:"name"`
-	Emial string `json:"email"`
-	Code  string `json:"code"`
+	Name     string `json:"name"`
+	Emial    string `json:"email"`
+	Code     string `json:"code"`
+	Password string `json:"password"`
 }
 
 type Registerrespo struct {

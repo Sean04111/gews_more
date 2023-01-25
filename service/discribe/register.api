@@ -19,6 +19,7 @@ type(
 )
 @server(
     group:registercode
+    middleware:Getcode
 )
 service gews-api {
     @handler registercode
@@ -29,6 +30,7 @@ type(
         Name string `json:"name"`
         Emial string `json:"email"`
         Code string `json:"code"`
+        Password string `json:"password"`
     }
     registerrespo{
         Error_code int `json:"error_code"`
@@ -42,6 +44,7 @@ type(
 )
 @server(
     group: register
+    middleware:Registercheck
 )
 service gews-api {
     @handler register

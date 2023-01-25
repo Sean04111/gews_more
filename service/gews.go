@@ -7,12 +7,14 @@ import (
 	"gews_more/service/internal/config"
 	"gews_more/service/internal/handler"
 	"gews_more/service/internal/svc"
-
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/gews-api.yaml", "the config file")
+var (
+	configFile = flag.String("f", "etc/gews-api.yaml", "the config file")
+	//Ca, _ = cache.NewCache("memory", `{"interval":60}`)
+)
 
 func main() {
 	flag.Parse()

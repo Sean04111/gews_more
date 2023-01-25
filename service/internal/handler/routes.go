@@ -14,32 +14,41 @@ import (
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/",
-				Handler: login.LoginHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Logincheck},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: login.LoginHandler(serverCtx),
+				},
+			}...,
+		),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/user/registercode",
-				Handler: registercode.RegistercodeHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Getcode},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/registercode",
+					Handler: registercode.RegistercodeHandler(serverCtx),
+				},
+			}...,
+		),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/user/register",
-				Handler: register.RegisterHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Registercheck},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/register",
+					Handler: register.RegisterHandler(serverCtx),
+				},
+			}...,
+		),
 	)
 }

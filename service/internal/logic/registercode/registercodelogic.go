@@ -25,6 +25,7 @@ func NewRegistercodeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Regi
 
 func (l *RegistercodeLogic) Registercode(req *types.Registercodereque) (resp *types.Registercoderespo, err error) {
 	// todo: add your logic here and delete this line
-	
+	//计划使用redis来储存code
+	//code发送在logic中实现
 	return
 }

@@ -21,6 +21,7 @@ type (
 )
 @server(
     group:login
+	middleware:Logincheck
 )
 service gews-api{
 	@doc "login"

@@ -8,6 +8,7 @@ import (
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginLogic struct {
@@ -23,7 +24,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 		svcCtx: svcCtx,
 	}
 }
-//使用明文首先
+
 func (l *LoginLogic) Login(req *types.Reque) (resp *types.Respo, err error) {
 	// todo: add your logic here and delete this line
 	real,err:=l.svcCtx.UserModel.FindOne(l.ctx,req.Email)
@@ -31,7 +32,7 @@ func (l *LoginLogic) Login(req *types.Reque) (resp *types.Respo, err error) {
 		return &types.Respo{
 			Error_code: 2,
 		},err
-	}else if req.Password!=real.Password{
+	}else if bcrypt.CompareHashAndPassword([]byte(real.Password),[]byte(req.Password))!=nil{
 		return &types.Respo{
 			Error_code: 1,
 		},nil
