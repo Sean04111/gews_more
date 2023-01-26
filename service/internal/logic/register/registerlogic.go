@@ -2,11 +2,14 @@ package register
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"gews_more/service/internal/svc"
 	"gews_more/service/internal/types"
 	"gews_more/service/model"
 
+	"github.com/go-redis/redis"
 	"github.com/zeromicro/go-zero/core/logx"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -36,9 +39,20 @@ func (l *RegisterLogic) Register(req *types.Registerreque) (resp *types.Register
 	}
 	NewUser.Password = string(hashedpassword)
 
-	//计划使用redis储存用户个数然后来获取uid
-	//使用1代替（非主键）
-	NewUser.Uid = 1
+	olderid,e:=l.FromRedis()
+	if e!=nil{
+		fmt.Println("redis 读取失败")
+		return &types.Registerrespo{
+			Error_code: 1,
+		},nil
+	}
+	NewUser.Uid=int64(olderid)+1
+	if l.ToRedis(int(NewUser.Uid))!=nil{
+		fmt.Println("redis 写入失败")
+		return &types.Registerrespo{
+			Error_code: 1,
+		},nil
+	}
 	_, error := l.svcCtx.UserModel.Insert(l.ctx, &NewUser)
 	if error != nil {
 		return &types.Registerrespo{
@@ -53,4 +67,40 @@ func (l *RegisterLogic) Register(req *types.Registerreque) (resp *types.Register
 			Name:  NewUser.Name,
 		},
 	}, nil
+}
+func (l *RegisterLogic) ToRedis(id int) error {
+	client := redis.NewClient(&redis.Options{
+		Addr: "121.36.131.50:6379",
+		DB:   0,
+	})
+	pong, err := client.Ping().Result()
+
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	if pong != "PONG" {
+		fmt.Println("客户端连接redis服务端失败")
+		return  err
+	}
+	return client.Set("user",id,0).Err()
+}
+func(l* RegisterLogic)FromRedis()(int,error){
+		client := redis.NewClient(&redis.Options{
+		Addr: "121.36.131.50:6379",
+		DB:   0,
+	})
+	pong, err := client.Ping().Result()
+
+	if err != nil {
+		fmt.Println(err)
+		return 0,err
+	}
+	if pong != "PONG" {
+		fmt.Println("客户端连接redis服务端失败")
+		return  0,err
+	}
+	num,e:=client.Get("user").Result()
+	intnum,_:=strconv.Atoi(num)
+	return intnum,e
 }

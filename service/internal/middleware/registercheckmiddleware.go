@@ -1,15 +1,12 @@
 package middleware
 
 import (
+	"encoding/json"
 	"fmt"
-	"math/rand"
+	"gews_more/service/internal/types"
 	"net/http"
-	"net/smtp"
-	"strconv"
-	"time"
 
-	"github.com/beego/beego/v2/adapter/cache"
-	"github.com/jordan-wright/email"
+	"github.com/go-redis/redis"
 )
 
 type RegistercheckMiddleware struct {
@@ -19,50 +16,63 @@ func NewRegistercheckMiddleware() *RegistercheckMiddleware {
 	return &RegistercheckMiddleware{}
 }
 
+type Reque struct {
+	Email    string
+	Name     string
+	Code     string
+	Password string
+}
+
 func (m *RegistercheckMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// TODO generate middleware implement function, delete after code implementation
 		//code的校验在middleware中实现
 		// Passthrough to next handler if need
-		
-		next(w, r)
+		var NewR Reque
+		err := json.NewDecoder(r.Body).Decode(&NewR)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			fmt.Println("Parse Error!")
+			return
+		}
+		realcode, e := FromRedis(NewR.Name)
+		if e != nil {
+			fmt.Println("Redis 读取失败！！！")
+			return
+		} else {
+			if realcode == NewR.Code {
+				next(w, r)
+			} else {
+				fail := types.Registerrespo{
+					Error_code: 1,
+				}
+				message, _ := json.Marshal(fail)
+				w.Write(message)
+				return
+			}
+		}
 	}
 }
+func FromRedis(name string) (string, error) {
+	client := redis.NewClient(&redis.Options{
+		Addr: "121.36.131.50:6379",
+		DB:   0,
+	})
+	pong, err := client.Ping().Result()
 
-//邮箱验证码绑定方法
-func Send(ca cache.Cache, receiver string, fromqq string, rightcode string) error {
-	//get the code
-	rand.Seed(time.Now().UnixNano())
-	code := rand.Intn(10000)
-	//Input the code
-	InputCode(ca, code)
-	text := "your verification code is :" + strconv.Itoa(code)
-	em := email.NewEmail()
-	em.From = fromqq
-	em.To = []string{receiver}
-	em.Subject = "Hello"
-	em.Text = []byte(text)
-	err := em.Send("smtp.qq.com:25", smtp.PlainAuth("", fromqq, rightcode, "smtp.qq.com"))
 	if err != nil {
-		fmt.Println("send error :", err)
+		fmt.Println(err)
+		return "", nil
 	}
-	//input code into the cache
-	return err
-}
-
-func Check(ca cache.Cache, input int) bool {
-	real := GetCode(ca)
-	if input == real {
-		return true
+	if pong != "PONG" {
+		fmt.Println("客户端连接redis服务端失败")
+		return "", nil
+	}
+	code, er := client.Get(name).Result()
+	if er != nil {
+		fmt.Println("redis 读取失败!!")
+		return "", er
 	} else {
-		return false
+		return code, nil
 	}
-}
-func InputCode(ca cache.Cache, code int) error {
-	err := ca.Put("code", code, 60*time.Second)
-	return err
-}
-func GetCode(ca cache.Cache) int {
-	out := ca.Get("code")
-	return out.(int)
 }
