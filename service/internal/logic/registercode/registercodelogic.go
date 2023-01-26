@@ -33,9 +33,19 @@ func (l *RegistercodeLogic) Registercode(req *types.Registercodereque) (resp *ty
 	// todo: add your logic here and delete this line
 	//计划使用redis来储存code
 	//code发送在logic中实现
-	return
+	realcode,err:=l.SendCode(req.Email)
+	l.ToRedis(req.Name,strconv.Itoa(realcode))
+	if err!=nil{
+		return &types.Registercoderespo{
+			Error_code: 1,
+		},nil
+	}else{
+		return &types.Registercoderespo{
+			Error_code: 0,
+		},nil
+	}
 }
-func (l *RegistercodeLogic) SendCode(receiver string) error {
+func (l *RegistercodeLogic) SendCode(receiver string) (int,error) {
 	//随机生成验证码
 	rand.Seed(time.Now().UnixNano())
 	code := rand.Intn(10000)
@@ -53,8 +63,8 @@ func (l *RegistercodeLogic) SendCode(receiver string) error {
 		fmt.Println("send error :", err)
 	}
 	//input code into the cache
-	return err
+	return code,err
 }
-func (l *RegistercodeLogic) ToRedis(code string) {
+func (l *RegistercodeLogic) ToRedis(name,code string) {
 
 }
