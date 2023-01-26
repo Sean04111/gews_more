@@ -9,6 +9,7 @@ import (
 	register "gews_more/service/internal/handler/register"
 	registercode "gews_more/service/internal/handler/registercode"
 	snappost "gews_more/service/internal/handler/snappost"
+	trending "gews_more/service/internal/handler/trending"
 	"gews_more/service/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -70,6 +71,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/snappost",
 				Handler: snappost.PostsnapHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/trending",
+				Handler: trending.TrendingHandler(serverCtx),
 			},
 		},
 	)

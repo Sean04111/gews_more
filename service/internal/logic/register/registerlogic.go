@@ -39,7 +39,6 @@ func (l *RegisterLogic) Register(req *types.Registerreque) (resp *types.Register
 	//计划使用redis储存用户个数然后来获取uid
 	//使用1代替（非主键）
 	NewUser.Uid = 1
-
 	_, error := l.svcCtx.UserModel.Insert(l.ctx, &NewUser)
 	if error != nil {
 		return &types.Registerrespo{

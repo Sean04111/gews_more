@@ -3,6 +3,7 @@ module gews_more
 go 1.18
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/beego/beego/v2 v2.0.7
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/zeromicro/go-zero v1.4.4
@@ -10,6 +11,7 @@ require (
 )
 
 require (
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect

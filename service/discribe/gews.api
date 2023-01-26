@@ -9,3 +9,4 @@ info(
 import "login.api"
 import "register.api"
 import "snaps.api"
+import "trending.api"

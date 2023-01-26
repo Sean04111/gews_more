@@ -1,0 +1,29 @@
+syntax = "v2"
+info(
+    title: "获取新闻界面"
+    author: "Sean"
+    version: "1.0"
+)
+type(
+    Trendingreque{
+        Name string `json:"name"` 
+    }
+    Trendingrespo{
+        Error_code int `json:"error_code"`
+        Trending []Trending `json:"trending"`
+    }
+    Trending{
+        Tid int `json:"tid"`
+        Tittle string `json:"title"`
+        Img string `json:"img"`
+        Content string `json:"content"`
+        Href string `json:"href"`
+    }
+)
+@server(
+    group:trending
+)
+service gews-api {
+    @handler trendinghandler
+    get /trending(Trendingreque)returns(Trendingrespo)
+}

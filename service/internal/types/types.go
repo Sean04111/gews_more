@@ -76,3 +76,20 @@ type Snappostreque struct {
 type Snappostrespo struct {
 	Error_code int `json:"error_code"`
 }
+
+type Trendingreque struct {
+	Name string `json:"name"`
+}
+
+type Trendingrespo struct {
+	Error_code int        `json:"error_code"`
+	Trending   []Trending `json:"trending"`
+}
+
+type Trending struct {
+	Tid     int    `json:"tid"`
+	Tittle  string `json:"title"`
+	Img     string `json:"img"`
+	Content string `json:"content"`
+	Href    string `json:"href"`
+}
