@@ -23,12 +23,7 @@ type Registercodereque struct {
 }
 
 type Registercoderespo struct {
-	Error_code int      `json:"error_code"`
-	Data       CodeData `json:"data"`
-}
-
-type CodeData struct {
-	Code string `json:"code"`
+	Error_code int `json:"error_code"`
 }
 
 type Registerreque struct {

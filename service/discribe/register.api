@@ -11,10 +11,6 @@ type(
     }
     registercoderespo{
         Error_code int `json:"error_code"`
-        Data CodeData `json:"data"`
-    }
-    CodeData{
-        Code string `json:"code"`
     }
 )
 @server(
