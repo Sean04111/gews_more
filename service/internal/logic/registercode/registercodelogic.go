@@ -54,7 +54,7 @@ func (l *RegistercodeLogic) SendCode(receiver string) (int,error) {
 	em := email.NewEmail()
 	em.From = "3408935702@qq.com"
 	em.To = []string{receiver}
-	em.Subject = "Hello"
+	em.Subject = "欢迎加入gews!"
 	em.Text = []byte(text)
 	//注意!!!
 	//QQ邮箱验证码需要定期更换
