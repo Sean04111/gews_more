@@ -53,17 +53,14 @@ func (l *RegistercodeLogic) SendCode(receiver string) (int, error) {
 	//Input the code
 	text := "欢迎加入gews!!你的验证码是 :" + strconv.Itoa(code)
 	em := email.NewEmail()
-	em.From = "3408935702@qq.com"
+	em.From = "seantown1998@163.com"
 	em.To = []string{receiver}
 	em.Subject = "欢迎加入gews!"
 	em.Text = []byte(text)
-	em.HTML=[]byte(
-		`<html></html>
-		`)
 	//注意!!!
 	//QQ邮箱验证码需要定期更换
 	//同时注意QQ盗号他用！！
-	err := em.Send("smtp.qq.com:25", smtp.PlainAuth("", "3408935702@qq.com", "cesdwcniiuhtcjja", "smtp.qq.com"))
+	err := em.Send("smtp.163.com:25", smtp.PlainAuth("", "seantown1998@163.com", "UROSELZDZDTPFSDV", "smtp.163.com"))
 	if err != nil {
 		fmt.Println("send error :", err)
 	}
@@ -84,7 +81,7 @@ func (l *RegistercodeLogic) ToRedis(name, code string) {
 	if pong != "PONG" {
 		fmt.Println("客户端连接redis服务端失败")
 	}else {
-		err:=client.Set(name,code,120).Err()
+		err:=client.Set(name,code,time.Second*180).Err()
 		if err!=nil{
 			fmt.Println("插入redis值失败!!!")
 		}

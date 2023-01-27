@@ -39,34 +39,42 @@ func (l *RegisterLogic) Register(req *types.Registerreque) (resp *types.Register
 	}
 	NewUser.Password = string(hashedpassword)
 
-	olderid,e:=l.FromRedis()
-	if e!=nil{
+	olderid, e := l.FromRedis()
+	if e != nil {
 		fmt.Println("redis 读取失败")
-		return &types.Registerrespo{
-			Error_code: 1,
-		},nil
-	}
-	NewUser.Uid=int64(olderid)+1
-	if l.ToRedis(int(NewUser.Uid))!=nil{
-		fmt.Println("redis 写入失败")
-		return &types.Registerrespo{
-			Error_code: 1,
-		},nil
-	}
-	_, error := l.svcCtx.UserModel.Insert(l.ctx, &NewUser)
-	if error != nil {
 		return &types.Registerrespo{
 			Error_code: 1,
 		}, nil
 	}
-	return &types.Registerrespo{
-		Error_code: 0,
-		Data: types.Registerdata{
-			Uid:   int(NewUser.Uid),
-			Email: NewUser.Email,
-			Name:  NewUser.Name,
-		},
-	}, nil
+	NewUser.Uid = int64(olderid) + 1
+	if l.ToRedis(int(NewUser.Uid)) != nil {
+		fmt.Println("redis 写入失败")
+		return &types.Registerrespo{
+			Error_code: 1,
+		}, nil
+	}
+	realcode, _ := CodeFromRedis(req.Name)
+	if req.Code == realcode {
+		_, error := l.svcCtx.UserModel.Insert(l.ctx, &NewUser)
+		if error != nil {
+			return &types.Registerrespo{
+				Error_code: 1,
+			}, nil
+		} else {
+			return &types.Registerrespo{
+				Error_code: 0,
+				Data: types.Registerdata{
+					Uid:   int(NewUser.Uid),
+					Email: NewUser.Email,
+					Name:  NewUser.Name,
+				},
+			}, nil
+		}
+	}else{
+		return &types.Registerrespo{
+			Error_code: 1,
+		},nil
+	}
 }
 func (l *RegisterLogic) ToRedis(id int) error {
 	client := redis.NewClient(&redis.Options{
@@ -81,12 +89,12 @@ func (l *RegisterLogic) ToRedis(id int) error {
 	}
 	if pong != "PONG" {
 		fmt.Println("客户端连接redis服务端失败")
-		return  err
+		return err
 	}
-	return client.Set("user",id,0).Err()
+	return client.Set("user", id, 0).Err()
 }
-func(l* RegisterLogic)FromRedis()(int,error){
-		client := redis.NewClient(&redis.Options{
+func (l *RegisterLogic) FromRedis() (int, error) {
+	client := redis.NewClient(&redis.Options{
 		Addr: "121.36.131.50:6379",
 		DB:   0,
 	})
@@ -94,13 +102,36 @@ func(l* RegisterLogic)FromRedis()(int,error){
 
 	if err != nil {
 		fmt.Println(err)
-		return 0,err
+		return 0, err
 	}
 	if pong != "PONG" {
 		fmt.Println("客户端连接redis服务端失败")
-		return  0,err
+		return 0, err
 	}
-	num,e:=client.Get("user").Result()
-	intnum,_:=strconv.Atoi(num)
-	return intnum,e
+	num, e := client.Get("user").Result()
+	intnum, _ := strconv.Atoi(num)
+	return intnum, e
+}
+func CodeFromRedis(name string) (string, error) {
+	client := redis.NewClient(&redis.Options{
+		Addr: "121.36.131.50:6379",
+		DB:   0,
+	})
+	pong, err := client.Ping().Result()
+
+	if err != nil {
+		fmt.Println(err)
+		return "", nil
+	}
+	if pong != "PONG" {
+		fmt.Println("客户端连接redis服务端失败")
+		return "", nil
+	}
+	code, er := client.Get(name).Result()
+	if er != nil {
+		fmt.Println("redis 读取失败!!")
+		return "", er
+	} else {
+		return code, nil
+	}
 }
