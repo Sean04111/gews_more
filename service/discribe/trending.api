@@ -25,5 +25,5 @@ type(
 )
 service gews-api {
     @handler trendinghandler
-    get /trending(Trendingreque)returns(Trendingrespo)
+    post /trending(Trendingreque)returns(Trendingrespo)
 }
